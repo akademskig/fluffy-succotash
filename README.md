@@ -10,7 +10,8 @@
 
 ### Build and start project
 
-- npm start
+- npm build
+- npm start [pathOption]
 
 ### Run dev server
 
