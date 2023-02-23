@@ -1,4 +1,4 @@
-import { PathErrors, PathFinder } from "../src/PathFinder";
+import { PathErrors, PathFinder } from '../src/PathFinder';
 
 describe('test if pathfinder works', () => {
   test('correct output', () => {
@@ -119,7 +119,7 @@ describe('test if pathfinder works', () => {
   });
   test('if handles broken path correctly', () => {
     const arr = [
-      ['@', '-', '-', 'A', '-', '', '-', '+'],
+      ['@', '-', '-', 'A', '-', ' ', '-', '+'],
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '|'],
       ['x', '-', 'B', '-', '+', ' ', ' ', 'C'],
       [' ', ' ', ' ', ' ', '|', ' ', ' ', ' ', '|'],
@@ -145,5 +145,13 @@ describe('test if pathfinder works', () => {
   test('if handles fake turn correctly', () => {
     const pathArr = [['@', '-', 'B', '+', 'C', 'D', 'A', '-', 'x']];
     expect(() => new PathFinder(pathArr).init()).toThrowError(Error(PathErrors.FAKE_TURN));
+  });
+  test('if handles invalid chars correctly', () => {
+    const pathArr = [
+      ['@', '-', 'B', '-', 'C', 'D'],
+      ['x', '-', '-', '+', ' ', 'D', 'C', '-', '+'],
+      [' ', ' ', ' ', '+', 'ć', '-', '-', '-', '+'],
+    ];
+    expect(() => new PathFinder(pathArr).init()).toThrowError(Error(PathErrors.INVALID_CHAR));
   });
 });

@@ -7,6 +7,7 @@ enum Direction {
 
 export enum PathErrors {
   INVALID_PATH = 'INVALID_PATH',
+  INVALID_CHAR = 'INVALID_CHAR',
   NO_ENTRY_POINT_FOUND = 'NO_ENTRY_POINT_FOUND',
   NO_END_FOUND = 'NO_END_FOUND',
   MULTIPLE_ENTRY_POINTS_FOUND = 'MULTIPLE_ENTRY_POINTS_FOUND',
@@ -25,6 +26,10 @@ const OPOSITES = {
   [Direction.right]: Direction.left,
   [Direction.left]: Direction.right,
 };
+
+const VALID_CHARS_REGEX = RegExp(/[A-Z@x+\-\| ]/);
+const TURNS_REGEX = RegExp(/[A-Z@+]/);
+
 export class PathFinder {
   letters: string[] = [];
   pathCharacters: string[] = [];
@@ -81,8 +86,12 @@ export class PathFinder {
     this.collectedIndexes[`${x}-${y}`] = 1;
   };
 
+  isValidChar = ({ x, y }: Coords) => {
+    return this.arrPath[y]?.[x] && !!this.arrPath[y][x].match(VALID_CHARS_REGEX);
+  };
+
   getNextIndex = ({ x, y, dir }: Coords): Coords => {
-    if (this.arrPath[y][x].match(/[A-Z@+]/)) {
+    if (this.arrPath[y][x].match(TURNS_REGEX)) {
       dir = this.checkDirection({ x, y, dir });
     }
     switch (dir) {
@@ -100,6 +109,9 @@ export class PathFinder {
   };
 
   traverse = ({ x, y, dir }: Coords): Boolean => {
+    if (!this.isValidChar({ x, y })) {
+      throw Error(PathErrors.INVALID_CHAR);
+    }
     this.collectChar({ x, y });
     const char = this.arrPath[y][x];
     if (char === 'x') {
