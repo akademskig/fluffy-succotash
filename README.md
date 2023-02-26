@@ -6,7 +6,7 @@
 
 ### Run tests
 
-- npm run test
+- npm test
 
 ### Build and start project
 
