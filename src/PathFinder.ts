@@ -12,6 +12,8 @@ export enum PathErrors {
   NO_END_FOUND = 'NO_END_FOUND',
   MULTIPLE_ENTRY_POINTS_FOUND = 'MULTIPLE_ENTRY_POINTS_FOUND',
   FAKE_TURN = 'FAKE_TURN',
+  FORK_IN_PATH = 'FORK_IN_PATH',
+  MULTIPLE_STARTING_PATHS = 'MULTIPLE_STARTING_PATHS',
 }
 
 type Coords = {
@@ -71,15 +73,21 @@ export class PathFinder {
     if ((this.arrPath[y - 1]?.[x] || '').match(/[|+A-Z]/)) {
       directions.push(Direction.up);
     }
-    const validDirections = dir ? directions.filter((d) => d !== OPOSITES[dir]) : directions;
-    if (validDirections.length !== 1) throw Error(PathErrors.INVALID_PATH);
-    if (this.arrPath[y]?.[x].match(/\+/) && validDirections[0] === dir) throw Error(PathErrors.FAKE_TURN);
-    return validDirections[0];
+    const validDirections = dir ? directions.filter((d) => d !== OPOSITES[dir]) : directions; // dont go back
+    if (validDirections.length > 1 && !dir) {
+      throw Error(PathErrors.MULTIPLE_STARTING_PATHS);
+    }
+    if (validDirections.length === 1 && this.arrPath[y]?.[x].match(/\+/) && validDirections[0] === dir)
+      throw Error(PathErrors.FAKE_TURN);
+    if (validDirections.length === 2) {
+      throw Error(PathErrors.FORK_IN_PATH);
+    }
+    const sameDirection = dir && validDirections.find((validDirection) => validDirection === dir);
+    return sameDirection || validDirections[0];
   };
 
   collectChar = ({ x, y }: Coords) => {
-    if (this.collectedIndexes[`${x}-${y}`]) return;
-    if (this.arrPath[y][x].match(/[A-Z]/)) {
+    if (this.arrPath[y][x].match(/[A-Z]/) && !this.collectedIndexes[`${x}-${y}`]) {
       this.letters.push(this.arrPath[y][x]);
     }
     this.pathCharacters.push(this.arrPath[y][x]);

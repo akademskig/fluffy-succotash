@@ -2,7 +2,7 @@ import { PathErrors, PathFinder } from '../src/PathFinder';
 import {
   compactSpace,
   mulitpleEntry,
-  standard,
+  basic,
   intersection,
   missingEntry,
   broken,
@@ -10,10 +10,11 @@ import {
   multipleStartingPaths,
   fakeTurn,
   invalidChars,
+  goonies,
 } from '../src/testPaths';
 
 describe('test if pathfinder works', () => {
-  test('correct output', () => {
+  test('basic', () => {
     const lettersResult = ['A', 'C', 'B'];
     const pathResult = [
       '@',
@@ -40,12 +41,13 @@ describe('test if pathfinder works', () => {
       '-',
       'x',
     ];
-    const { letters, pathCharacters } = new PathFinder(standard).init();
+    const { letters, pathCharacters } = new PathFinder(basic).init();
     expect(letters).toMatchObject(lettersResult);
     expect(pathCharacters).toMatchObject(pathResult);
   });
-  test('correct output with intersection', () => {
+  test('intersection', () => {
     const expectedLetters = ['A', 'B', 'C', 'D'];
+  
     const expectedPathCharacters = [
       '@',
       '|',
@@ -66,6 +68,7 @@ describe('test if pathfinder works', () => {
       '-',
       '+',
       '|',
+      '-',
       '|',
       '|',
       '+',
@@ -80,6 +83,53 @@ describe('test if pathfinder works', () => {
       'x',
     ];
     const { letters, pathCharacters } = new PathFinder(intersection).init();
+    expect(letters).toMatchObject(expectedLetters);
+    expect(pathCharacters).toMatchObject(expectedPathCharacters);
+  });
+  test('goonies', () => {
+    const expectedLetters = ['G', 'O', 'O', 'N', 'I', 'E', 'S'];
+    const expectedPathCharacters = [
+      '@',
+      '-',
+      'G',
+      '-',
+      'O',
+      '-',
+      '+',
+      '|',
+      '+',
+      '-',
+      '+',
+      '|',
+      'O',
+      '|',
+      '|',
+      '+',
+      '-',
+      'O',
+      '-',
+      'N',
+      '-',
+      '+',
+      '|',
+      'I',
+      '|',
+      '+',
+      '-',
+      '+',
+      '|',
+      '+',
+      '-',
+      'I',
+      '-',
+      '+',
+      '|',
+      'E',
+      'S',
+      '|',
+      'x',
+    ];
+    const { letters, pathCharacters } = new PathFinder(goonies).init();
     expect(letters).toMatchObject(expectedLetters);
     expect(pathCharacters).toMatchObject(expectedPathCharacters);
   });
@@ -101,10 +151,10 @@ describe('test if pathfinder works', () => {
     expect(() => new PathFinder(broken).init()).toThrowError(Error(PathErrors.INVALID_PATH));
   });
   test('if handles fork in path correctly', () => {
-    expect(() => new PathFinder(fork).init()).toThrowError(Error(PathErrors.INVALID_PATH));
+    expect(() => new PathFinder(fork).init()).toThrowError(Error(PathErrors.FORK_IN_PATH));
   });
   test('if handles multiple starting paths correctly', () => {
-    expect(() => new PathFinder(multipleStartingPaths).init()).toThrowError(Error(PathErrors.INVALID_PATH));
+    expect(() => new PathFinder(multipleStartingPaths).init()).toThrowError(Error(PathErrors.MULTIPLE_STARTING_PATHS));
   });
   test('if handles fake turn correctly', () => {
     expect(() => new PathFinder(fakeTurn).init()).toThrowError(Error(PathErrors.FAKE_TURN));
