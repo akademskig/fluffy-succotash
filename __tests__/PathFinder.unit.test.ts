@@ -1,4 +1,4 @@
-import { Direction, PathErrors, PathFinder } from '../src/PathFinder';
+import { Direction, PathFinder } from '../src/PathFinder';
 import { basic, goonies, invalidChars } from '../src/testPaths';
 
 describe('pathfinder unit tests', () => {
