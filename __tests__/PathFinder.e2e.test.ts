@@ -11,6 +11,7 @@ import {
   fakeTurn,
   invalidChars,
   goonies,
+  blah,
 } from '../src/testPaths';
 
 describe('test if pathfinder works', () => {
@@ -130,6 +131,35 @@ describe('test if pathfinder works', () => {
       'x',
     ];
     const { letters, pathCharacters } = new PathFinder(goonies).init();
+    expect(letters).toMatchObject(expectedLetters);
+    expect(pathCharacters).toMatchObject(expectedPathCharacters);
+  });
+  test('blah', () => {
+    const expectedLetters = ['B', 'L', 'A', 'H'];
+    const expectedPathCharacters = [
+      '@',
+      'B',
+      '+',
+      '+',
+      '+',
+      'B',
+      '|',
+      '+',
+      '-',
+      'L',
+      '-',
+      '+',
+      'A',
+      '+',
+      '+',
+      '+',
+      'A',
+      '-',
+      '+',
+      'H',
+      'x',
+    ];
+    const { letters, pathCharacters } = new PathFinder(blah).init();
     expect(letters).toMatchObject(expectedLetters);
     expect(pathCharacters).toMatchObject(expectedPathCharacters);
   });

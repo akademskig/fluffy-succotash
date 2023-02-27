@@ -31,6 +31,8 @@ const OPOSITES = {
 
 const VALID_CHARS_REGEX = RegExp(/[A-Z@x+\-\| ]/);
 const TURNS_REGEX = RegExp(/[A-Z@+]/);
+const VALID_HORIZONTAL = RegExp(/[-+A-Z@x]/);
+const VALID_VERTICAL = RegExp(/[|+A-Z@x]/);
 
 export class PathFinder {
   letters: string[] = [];
@@ -61,16 +63,16 @@ export class PathFinder {
 
   checkDirection = ({ x, y, dir }: Position): Direction => {
     const directions: Direction[] = [];
-    if ((this.arrPath[y]?.[x + 1] || '').match(/[-+A-Z]/)) {
+    if ((this.arrPath[y]?.[x + 1] || '').match(VALID_HORIZONTAL)) {
       directions.push(Direction.right);
     }
-    if ((this.arrPath[y]?.[x - 1] || '').match(/[-+A-Z]/)) {
+    if ((this.arrPath[y]?.[x - 1] || '').match(VALID_HORIZONTAL)) {
       directions.push(Direction.left);
     }
-    if ((this.arrPath[y + 1]?.[x] || '').match(/[|+A-Z]/)) {
+    if ((this.arrPath[y + 1]?.[x] || '').match(VALID_VERTICAL)) {
       directions.push(Direction.down);
     }
-    if ((this.arrPath[y - 1]?.[x] || '').match(/[|+A-Z]/)) {
+    if ((this.arrPath[y - 1]?.[x] || '').match(VALID_VERTICAL)) {
       directions.push(Direction.up);
     }
     const validDirections = dir ? directions.filter((d) => d !== OPOSITES[dir]) : directions; // dont go back
@@ -112,7 +114,6 @@ export class PathFinder {
       case Direction.up:
         return { x, y: y - 1, dir };
     }
-
     throw Error(PathErrors.INVALID_PATH);
   };
 
