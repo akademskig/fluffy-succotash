@@ -16,7 +16,7 @@ export enum PathErrors {
   MULTIPLE_STARTING_PATHS = 'MULTIPLE_STARTING_PATHS',
 }
 
-type Coords = {
+type Position = {
   x: number;
   y: number;
   dir?: Direction;
@@ -59,7 +59,7 @@ export class PathFinder {
     return starts[0];
   };
 
-  checkDirection = ({ x, y, dir }: Coords): Direction => {
+  checkDirection = ({ x, y, dir }: Position): Direction => {
     const directions: Direction[] = [];
     if ((this.arrPath[y]?.[x + 1] || '').match(/[-+A-Z]/)) {
       directions.push(Direction.right);
@@ -86,7 +86,7 @@ export class PathFinder {
     return sameDirection || validDirections[0];
   };
 
-  collectChar = ({ x, y }: Coords) => {
+  collectChar = ({ x, y }: Position) => {
     if (this.arrPath[y][x].match(/[A-Z]/) && !this.collectedIndexes[`${x}-${y}`]) {
       this.letters.push(this.arrPath[y][x]);
     }
@@ -94,11 +94,11 @@ export class PathFinder {
     this.collectedIndexes[`${x}-${y}`] = 1;
   };
 
-  isValidChar = ({ x, y }: Coords) => {
+  isValidChar = ({ x, y }: Position) => {
     return this.arrPath[y]?.[x] && !!this.arrPath[y][x].match(VALID_CHARS_REGEX);
   };
 
-  getNextIndex = ({ x, y, dir }: Coords): Coords => {
+  getNextIndex = ({ x, y, dir }: Position): Position => {
     if (this.arrPath[y][x].match(TURNS_REGEX)) {
       dir = this.checkDirection({ x, y, dir });
     }
@@ -116,7 +116,7 @@ export class PathFinder {
     throw Error(PathErrors.INVALID_PATH);
   };
 
-  traverse = ({ x, y, dir }: Coords): Boolean => {
+  traverse = ({ x, y, dir }: Position): Boolean => {
     if (!this.isValidChar({ x, y })) {
       throw Error(PathErrors.INVALID_CHAR);
     }
@@ -131,7 +131,7 @@ export class PathFinder {
   };
 
   init = () => {
-    const start = this.findStart(); // start coord
+    const start = this.findStart(); // start position
     const { x, y } = start;
     const end = this.traverse({ x, y });
     if (end) {

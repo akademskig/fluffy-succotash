@@ -10,7 +10,8 @@ const init = () => {
   } else {
     const path = selectedPath[arg];
     const { pathCharacters, letters } = new PathFinder(path).init();
-    console.log(pathCharacters, letters);
+    console.log(`Path caracters: ${pathCharacters}`);
+    console.log(`Letters: ${letters}`);
   }
 };
 init();
