@@ -38,17 +38,17 @@ export class PathFinder {
   letters: string[] = [];
   pathCharacters: string[] = [];
   collectedIndexes: Record<string, number> = {};
-  arrPath;
+  path;
 
-  constructor(arrPath: string[][]) {
-    this.arrPath = arrPath;
+  constructor(path: string[][]) {
+    this.path = path;
   }
 
   findStart = () => {
     const starts = [];
-    for (let row = 0; row <= this.arrPath.length - 1; row++) {
-      for (let char = 0; char <= this.arrPath[row].length - 1; char++) {
-        if (this.arrPath[row][char] === '@') {
+    for (let row = 0; row <= this.path.length - 1; row++) {
+      for (let char = 0; char <= this.path[row].length - 1; char++) {
+        if (this.path[row][char] === '@') {
           starts.push({ y: row, x: char });
         }
       }
@@ -63,23 +63,23 @@ export class PathFinder {
 
   checkDirection = ({ x, y, dir }: Position): Direction => {
     const directions: Direction[] = [];
-    if ((this.arrPath[y]?.[x + 1] || '').match(VALID_HORIZONTAL)) {
+    if ((this.path[y]?.[x + 1] || '').match(VALID_HORIZONTAL)) {
       directions.push(Direction.right);
     }
-    if ((this.arrPath[y]?.[x - 1] || '').match(VALID_HORIZONTAL)) {
+    if ((this.path[y]?.[x - 1] || '').match(VALID_HORIZONTAL)) {
       directions.push(Direction.left);
     }
-    if ((this.arrPath[y + 1]?.[x] || '').match(VALID_VERTICAL)) {
+    if ((this.path[y + 1]?.[x] || '').match(VALID_VERTICAL)) {
       directions.push(Direction.down);
     }
-    if ((this.arrPath[y - 1]?.[x] || '').match(VALID_VERTICAL)) {
+    if ((this.path[y - 1]?.[x] || '').match(VALID_VERTICAL)) {
       directions.push(Direction.up);
     }
     const validDirections = dir ? directions.filter((d) => d !== OPOSITES[dir]) : directions; // dont go back
     if (validDirections.length > 1 && !dir) {
       throw Error(PathErrors.MULTIPLE_STARTING_PATHS);
     }
-    if (validDirections.length === 1 && this.arrPath[y]?.[x].match(/\+/) && validDirections[0] === dir)
+    if (validDirections.length === 1 && this.path[y]?.[x].match(/\+/) && validDirections[0] === dir)
       throw Error(PathErrors.FAKE_TURN);
     if (validDirections.length === 2) {
       throw Error(PathErrors.FORK_IN_PATH);
@@ -89,19 +89,19 @@ export class PathFinder {
   };
 
   collectChar = ({ x, y }: Position) => {
-    if (this.arrPath[y][x].match(/[A-Z]/) && !this.collectedIndexes[`${x}-${y}`]) {
-      this.letters.push(this.arrPath[y][x]);
+    if (this.path[y][x].match(/[A-Z]/) && !this.collectedIndexes[`${x}-${y}`]) {
+      this.letters.push(this.path[y][x]);
     }
-    this.pathCharacters.push(this.arrPath[y][x]);
+    this.pathCharacters.push(this.path[y][x]);
     this.collectedIndexes[`${x}-${y}`] = 1;
   };
 
   isValidChar = ({ x, y }: Position) => {
-    return this.arrPath[y]?.[x] && !!this.arrPath[y][x].match(VALID_CHARS_REGEX);
+    return this.path[y]?.[x] && !!this.path[y][x].match(VALID_CHARS_REGEX);
   };
 
   getNextPosition = ({ x, y, dir }: Position): Position => {
-    if (this.arrPath[y][x].match(TURNS_REGEX)) {
+    if (this.path[y][x].match(TURNS_REGEX)) {
       dir = this.checkDirection({ x, y, dir });
     }
     switch (dir) {
@@ -122,7 +122,7 @@ export class PathFinder {
       throw Error(PathErrors.INVALID_CHAR);
     }
     this.collectChar({ x, y });
-    const char = this.arrPath[y][x];
+    const char = this.path[y][x];
     if (char === 'x') {
       return true;
     } else {
