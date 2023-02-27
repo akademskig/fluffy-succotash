@@ -60,7 +60,7 @@ export class PathFinder {
     }
     return starts[0];
   };
-
+  // find next direction on intersection char
   checkDirection = ({ x, y, dir }: Position): Direction => {
     const directions: Direction[] = [];
     if ((this.path[y]?.[x + 1] || '').match(VALID_HORIZONTAL)) {
@@ -126,8 +126,8 @@ export class PathFinder {
     if (char === 'x') {
       return true;
     } else {
-      const nextIndex = this.getNextPosition({ x, y, dir });
-      return this.traverse(nextIndex);
+      const nextPosition = this.getNextPosition({ x, y, dir });
+      return this.traverse(nextPosition);
     }
   };
 
