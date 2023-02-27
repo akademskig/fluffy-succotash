@@ -1,4 +1,4 @@
-enum Direction {
+export enum Direction {
   up = 'up',
   down = 'down',
   left = 'left',
@@ -98,7 +98,7 @@ export class PathFinder {
     return this.arrPath[y]?.[x] && !!this.arrPath[y][x].match(VALID_CHARS_REGEX);
   };
 
-  getNextIndex = ({ x, y, dir }: Position): Position => {
+  getNextPosition = ({ x, y, dir }: Position): Position => {
     if (this.arrPath[y][x].match(TURNS_REGEX)) {
       dir = this.checkDirection({ x, y, dir });
     }
@@ -125,7 +125,7 @@ export class PathFinder {
     if (char === 'x') {
       return true;
     } else {
-      const nextIndex = this.getNextIndex({ x, y, dir });
+      const nextIndex = this.getNextPosition({ x, y, dir });
       return this.traverse(nextIndex);
     }
   };

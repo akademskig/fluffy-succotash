@@ -7,7 +7,7 @@
     "dev": "tsnd src/index.ts",
     "build": "rm -rf ./dist && tsc src/* --outDir dist",
     "start": "node ./dist/index.js",
-    "format:fix": "prettier -w src",
+    "format:fix": "prettier -w src __tests__",
     "test": "jest"
   },
   "keywords": [],

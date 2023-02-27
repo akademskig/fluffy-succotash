@@ -47,7 +47,7 @@ describe('test if pathfinder works', () => {
   });
   test('intersection', () => {
     const expectedLetters = ['A', 'B', 'C', 'D'];
-  
+
     const expectedPathCharacters = [
       '@',
       '|',
