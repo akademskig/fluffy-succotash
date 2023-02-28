@@ -5,7 +5,7 @@ const arg = process.argv[2];
 
 const init = () => {
   const selectedPath: Record<string, string[][]> = paths;
-  if (!selectedPath[arg] as unknown as Record<string, string[][]>) {
+  if (!selectedPath[arg]) {
     console.error('Select one of the following paths: ', Object.keys(paths).slice(1));
   } else {
     const path = selectedPath[arg];
