@@ -29,10 +29,12 @@ const OPOSITES = {
   [Direction.left]: Direction.right,
 };
 
-const VALID_CHARS_REGEX = RegExp(/[A-Z@x+\-\| ]/);
-const TURNS_REGEX = RegExp(/[A-Z@+]/);
+const VALID_CHARS = RegExp(/[A-Z@x+\-\| ]/);
+const TURNS = RegExp(/[A-Z@+]/);
 const VALID_HORIZONTAL = RegExp(/[-+A-Z@x]/);
 const VALID_VERTICAL = RegExp(/[|+A-Z@x]/);
+const START_CHAR = '@';
+const END_CHAR = 'x';
 
 export class PathFinder {
   letters: string[] = [];
@@ -48,7 +50,7 @@ export class PathFinder {
     const starts = [];
     for (let row = 0; row <= this.path.length - 1; row++) {
       for (let char = 0; char <= this.path[row].length - 1; char++) {
-        if (this.path[row][char] === '@') {
+        if (this.path[row][char] === START_CHAR) {
           starts.push({ y: row, x: char });
         }
       }
@@ -79,12 +81,13 @@ export class PathFinder {
     if (validDirections.length > 1 && !dir) {
       throw Error(PathErrors.MULTIPLE_STARTING_PATHS);
     }
-    if (validDirections.length === 1 && this.path[y]?.[x].match(/\+/) && validDirections[0] === dir)
+    if (validDirections.length === 1 && this.path[y]?.[x].match(/\+/) && validDirections[0] === dir) {
       throw Error(PathErrors.FAKE_TURN);
+    }
     if (validDirections.length === 2) {
       throw Error(PathErrors.FORK_IN_PATH);
     }
-    const sameDirection = dir && validDirections.find((validDirection) => validDirection === dir);
+    const sameDirection = dir && validDirections.find((validDirection) => validDirection === dir); // keep the same direction
     return sameDirection || validDirections[0];
   };
 
@@ -97,11 +100,11 @@ export class PathFinder {
   };
 
   isValidChar = ({ x, y }: Position) => {
-    return this.path[y]?.[x] && !!this.path[y][x].match(VALID_CHARS_REGEX);
+    return this.path[y]?.[x] && !!this.path[y][x].match(VALID_CHARS);
   };
 
   getNextPosition = ({ x, y, dir }: Position): Position => {
-    if (this.path[y][x].match(TURNS_REGEX)) {
+    if (this.path[y][x].match(TURNS)) {
       dir = this.checkDirection({ x, y, dir });
     }
     switch (dir) {
@@ -123,12 +126,11 @@ export class PathFinder {
     }
     this.collectChar({ x, y });
     const char = this.path[y][x];
-    if (char === 'x') {
-      return true;
-    } else {
+    if (char !== END_CHAR) {
       const nextPosition = this.getNextPosition({ x, y, dir });
       return this.traverse(nextPosition);
     }
+    return true;
   };
 
   init = () => {
